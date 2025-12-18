@@ -70,7 +70,7 @@ class HtmlTreeNode(object):
             subs = settings['SLUG_REGEX_SUBSTITUTIONS']
             new_id = slugify(new_string, subs)
 
-        new_id = unique(new_id, ids)  # make sure id is unique
+        # new_id = unique(new_id, ids)  # make sure id is unique
         new_header.attrs['id'] = new_id
         if(self.level < new_level):
             new_node = HtmlTreeNode(self, new_string, new_level, new_id,
@@ -141,7 +141,7 @@ def generate_toc(content):
     all_ids = set()
     title = content.metadata.get('title', 'Title')
     tree = node = HtmlTreeNode(None, title, 'h0', '', _toc_include_title)
-    soup = BeautifulSoup(content._content, 'html.parser')
+    soup = BeautifulSoup(content._content, 'html5lib')
     settoc = False
 
     try:
@@ -161,7 +161,7 @@ def generate_toc(content):
         tree_string = '{}'.format(tree)
         tree_soup = BeautifulSoup(tree_string, 'html.parser')
         content.toc = tree_soup.decode(formatter='html')
-    content._content = soup.decode(formatter='html')
+    content._content = soup.encode(formatter="html").decode("utf-8")
 
 
 def register():
